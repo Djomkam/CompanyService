@@ -1,0 +1,12 @@
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/entity/Address.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/ServletInitializer.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/entity/BeneficialOwner.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/controller/CompanyController.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/CompanyServiceApplication.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/service/CompanyService.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/repository/BeneficialOwnerRepository.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/entity/Company.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/service/BeneficialOwnerService.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/exception/CompanyNotFoundException.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/entity/BaseEntity.java
+/home/djomkam/Desktop/Spring WorkSpace/CompanyService/src/main/java/com/company/repository/CompanyRepository.java

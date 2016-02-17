@@ -1,0 +1,12 @@
+com/company/repository/BeneficialOwnerRepository.class
+com/company/entity/Company.class
+com/company/entity/BeneficialOwner.class
+com/company/entity/BaseEntity.class
+com/company/controller/CompanyController.class
+com/company/service/BeneficialOwnerService.class
+com/company/service/CompanyService.class
+com/company/CompanyServiceApplication.class
+com/company/entity/Address.class
+com/company/repository/CompanyRepository.class
+com/company/ServletInitializer.class
+com/company/exception/CompanyNotFoundException.class

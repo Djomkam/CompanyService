@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html ng-app="app">
+	<head>
+		<meta charset="UTF-8">
+		<title>Company Services</title>
+		<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
+		<script>
+		    // Defining angularjs application.
+		    var postApp = angular.module('app', []);
+		    // Controller function and passing $http service and $scope var.
+		    postApp.controller('postController', function($scope, $http) {
+		      // create a blank object to handle form data.
+		        $scope.company = {};
+		      // calling our submit function.
+		        $scope.createCompany = function() {
+		        // Posting data to php file
+		        $http({
+		          method  : 'POST',
+		          url     : '/company/new',
+		          data    : $scope.company,
+		          headers : {'Content-Type': 'application/json'} 
+		         })
+		          .success(function(data) {
+		        	$scope.com = data;
+		          });
+		        };
+		    });
+		    /*postApp.factory('allCompaniesFactory',function($http) {
+		    	var factory = {};
+		    
+		    	  factory.getAllCompanies = function() {
+		    		  $http({
+					       method  : 'GET',
+					       url     : '/company/all' 
+					   })
+					   .success(function(data) {
+					       return data;
+					   }); 
+		    	  }
+		    	  
+		    	 return factory;
+		    });
+		    
+		    postApp.service('allCompaniesService', function(allCompaniesFactory){
+	            this.getAll = function() {
+	               return allCompaniesFactory.getAllCompanies();
+	            }
+	         });*/
+		    postApp.controller('allCompaniesController', function($scope,$http) {
+			    $scope.getAllCompanies = function() {
+			    $http({
+			       method  : 'GET',
+			       url     : '/company/all' 
+			     })
+			     .success(function(data) {
+			         $scope.companies = data;
+			        });
+			     };
+			});
+		    postApp.controller('companyDetails', function($scope,$http) {
+			    $scope.getAllCompanies = function() {
+				    $http({
+				       method  : 'GET',
+				       url     : '/company/all' 
+				     })
+				     .success(function(data) {
+				         $scope.companies = data;
+				     });
+			     };
+			     $scope.getCompany = function() {
+					 $http({
+					       method  : 'GET',
+					       url     : '/company/'+$scope.selectedCompany 
+					  })
+					  .success(function(data) {
+					         $scope.company = data;
+					  });
+				  };
+			});
+		    postApp.controller('companyUpdate', function($scope,$http) {
+			    $scope.getAllCompanies = function() {
+				    $http({
+				       method  : 'GET',
+				       url     : '/company/all' 
+				     })
+				     .success(function(data) {
+				         $scope.companies = data;
+				     });
+			     };
+			     $scope.getCompany = function() {
+					 $http({
+					       method  : 'GET',
+					       url     : '/company/'+$scope.selectedCompany 
+					  })
+					  .success(function(data) {
+					         $scope.company = data;
+					  });
+				  };
+				  $scope.updateCompany = function(company) {
+						 $http({
+						       method  : 'PUT',
+						       url     : '/company/'+$scope.selectedCompany,
+						       data    : company
+						  })
+						  .success(function(data) {
+						         $scope.message = data;
+						  });
+					  };
+			});
+		</script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="tab-content">
+				<h2>Dynamic Tabs</h2>
+				  <ul class="nav nav-tabs">
+				    <li class="active"><a data-toggle="tab" href="#addCompany">Add Company</a></li>
+				    <li><a data-toggle="tab" href="#allCompanies">List Companies</a></li>
+				    <li><a data-toggle="tab" href="#companyDetails">Detail Company</a></li>
+				    <li><a data-toggle="tab" href="#companyUpdate">Update Company</a></li>
+				    <li><a data-toggle="tab" href="#addOwners">Add Company Owners</a></li>
+				  </ul>
+				  <div id="addCompany" class="tab-pane fade in active companyForm" ng-controller="postController">
+				  	<h3>Add a Company</h3>
+				  	<form ng-submit="createCompany()">
+						<table>
+							<tr>
+								<td>Name:</td>
+								<td><input type="text" name="name"  ng-model="company.name" class="theField" placeholder="Enter Company Name" /></td>
+							</tr>
+							<tr>
+								<td>Phone:</td>
+								<td><input type="text" name="phone" ng-model="company.phone" class="theField" placeholder="Enter Company Phone Number" /></td>
+							</tr>
+							<tr>
+								<td>Email:</td>
+								<td><input type="text" name="email" ng-model="company.email" class="theField" placeholder="Enter Company Email" /></td>
+							</tr>
+							<tr>
+								<td>Street:</td>
+								<td><input type="text" name="street"  ng-model="company.street" class="theField" placeholder="Enter Street" /></td>
+							</tr>
+							<tr>
+								<td>City:</td>
+								<td><input type="text" name="city" ng-model="company.city" class="theField" placeholder="Enter City" /></td>
+							</tr>
+							<tr>
+								<td>State:</td>
+								<td><input type="text" name="State" ng-model="company.state" class="theField" placeholder="Enter State" /></td>
+							</tr>
+							<tr>
+								<td>Country:</td>
+								<td><input type="text" name="country" ng-model="company.country" class="theField" placeholder="Enter Country" /></td>
+							</tr>
+							<tr>
+								<td>Zip:</td>
+								<td><input type="text" name="zip" ng-model="company.zip" class="theField" placeholder="Enter zip" /></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><input type="submit" name="submit" class="theButton" value="Add Company" /></td>
+							</tr>
+						</table>
+					</form>
+				  </div>
+				  <div id="allCompanies" class="tab-pane fade result" ng-controller="allCompaniesController">
+				  	<h3>List of all Companies</h3><br/>
+				  	<button class="btn btn-primary" ng-click="getAllCompanies()">All Companies</button><br/><br/>
+				  	<table class="table table-hover table-responsive">
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>Country</th>
+							<th>City</th>
+							<th>State</th>
+							<th>Street</th>
+							<th>Zip</th>
+						</tr>
+						<tr ng-repeat="com in companies">
+							<td>{{com.name}}</td>
+							<td>{{com.email}}</td>
+							<td>{{com.phone}}</td>
+							<td>{{com.country}}</td>
+							<td>{{com.city}}</td>
+							<td>{{com.state}}</td>
+							<td>{{com.street}}</td>
+							<td>{{com.zip}}</td>
+						</tr>
+					</table>
+				  </div>
+				  <div id="companyDetails" class="tab-pane fade companyDetails" ng-controller="companyDetails">
+					 <h3>Details about company</h3><br/>
+					 <button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
+					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
+					    <option value="">Select Company name</option>
+					 </select>
+					 <br/><br/>
+					 <ul>
+					 	<li>Name: <span class="cdetail">{{company.name}}</span></li>
+					 	<li>Email: <span class="cdetail">{{company.email}}</span></li>
+					 	<li>Phone: <span class="cdetail">{{company.phone}}</span></li>
+					 	<li>Country: <span class="cdetail">{{company.country}}</span></li>
+					 	<li>City: <span class="cdetail">{{company.city}}</span></li>
+					 	<li>State: <span class="cdetail">{{company.state}}</span></li>
+					 	<li>Street: <span class="cdetail">{{company.street}}</span></li>
+					 	<li>Zip: <span class="cdetail">{{company.zip}}</span></li>
+					 </ul>
+				  </div>
+				  <div id="companyUpdate" class="tab-pane fade companyForm" ng-controller="companyUpdate">
+				  	 <br/><button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
+					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
+					    <option value="">Select Company name</option>
+					 </select>
+					 <br/><br/>
+				  	 <h4>Update company {{selectCompany}}</h4>
+				  	 <form>
+						<table>
+							<tr>
+								<td>Name:</td>
+								<td><input type="text" name="name"  ng-model="company.name" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>Phone:</td>
+								<td><input type="text" name="phone" ng-model="company.phone" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>Email:</td>
+								<td><input type="text" name="email" ng-model="company.email" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>Street:</td>
+								<td><input type="text" name="street"  ng-model="company.street" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>City:</td>
+								<td><input type="text" name="city" ng-model="company.city" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>State:</td>
+								<td><input type="text" name="State" ng-model="company.state" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>Country:</td>
+								<td><input type="text" name="country" ng-model="company.country" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>Zip:</td>
+								<td><input type="text" name="zip" ng-model="company.zip" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><input type="submit" name="submit" ng-click="updateCompany(company)" class="btn btn-primary" value="Update Company" /></td>
+							</tr>
+						</table>
+					</form>
+				  </div>
+				  <div id="addOwners" class="tab-pane fade companyForm" ng-controller="addOwners">
+				  	<br/><button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
+					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
+					    <option value="">Select Company name</option>
+					 </select>
+					 <br/><br/>
+				  	 <h4>Add owners to company {{selectCompany}}</h4>
+				  </div>
+			</div>
+			<div class="footer">
+			
+			</div>
+		</div>
+	</body>
+</html>
