@@ -9,15 +9,10 @@
   		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
 		<script>
-		    // Defining angularjs application.
 		    var postApp = angular.module('app', []);
-		    // Controller function and passing $http service and $scope var.
 		    postApp.controller('postController', function($scope, $http) {
-		      // create a blank object to handle form data.
 		        $scope.company = {};
-		      // calling our submit function.
 		        $scope.createCompany = function() {
-		        // Posting data to php file
 		        $http({
 		          method  : 'POST',
 		          url     : '/company/new',
@@ -61,7 +56,7 @@
 			        });
 			     };
 			});
-		    postApp.controller('companyDetails', function($scope,$http) {
+		    postApp.controller('companyDetailsController', function($scope,$http) {
 			    $scope.getAllCompanies = function() {
 				    $http({
 				       method  : 'GET',
@@ -71,6 +66,7 @@
 				         $scope.companies = data;
 				     });
 			     };
+			     $scope.comp = $scope.selectedCompany;
 			     $scope.getCompany = function() {
 					 $http({
 					       method  : 'GET',
@@ -81,7 +77,7 @@
 					  });
 				  };
 			});
-		    postApp.controller('companyUpdate', function($scope,$http) {
+		    postApp.controller('companyUpdateController', function($scope,$http) {
 			    $scope.getAllCompanies = function() {
 				    $http({
 				       method  : 'GET',
@@ -91,6 +87,7 @@
 				         $scope.companies = data;
 				     });
 			     };
+			     $scope.comp = $scope.selectedCompany;
 			     $scope.getCompany = function() {
 					 $http({
 					       method  : 'GET',
@@ -111,6 +108,38 @@
 						  });
 					  };
 			});
+		    postApp.controller('addOwnersController', function($scope, $http) {
+		    	$scope.getAllCompanies = function() {
+				    $http({
+				       method  : 'GET',
+				       url     : '/company/all' 
+				     })
+				     .success(function(data) {
+				         $scope.companies = data;
+				     });
+			     };
+		    	$scope.comp = $scope.selectedCompany;
+			     $scope.getCompany = function() {
+					 $http({
+					       method  : 'GET',
+					       url     : '/company/'+$scope.selectedCompany 
+					  })
+					  .success(function(data) {
+					         $scope.company = data;
+					  });
+				  };
+		    	$scope.addOwner = function(owner) {
+		        $http({
+		          method  : 'POST',
+		          url     : '/company/'+$scope.selectedCompany+'/owners/add',
+		          data    : owner,
+		          headers : {'Content-Type': 'application/json'} 
+		         })
+		          .success(function(data) {
+		        	$scope.message = data;
+		          });
+		        };
+		    });
 		</script>
 	</head>
 	<body>
@@ -180,6 +209,7 @@
 							<th>State</th>
 							<th>Street</th>
 							<th>Zip</th>
+							<th>Owners</th>
 						</tr>
 						<tr ng-repeat="com in companies">
 							<td>{{com.name}}</td>
@@ -190,10 +220,15 @@
 							<td>{{com.state}}</td>
 							<td>{{com.street}}</td>
 							<td>{{com.zip}}</td>
+							<td>
+								<ul ng-if="com.owners != null" ng-repeat="owner in com.owners">
+									<li>{{owner.firstnamae}} {{owner.lastname}}</li>
+								</ul>
+							</td>
 						</tr>
 					</table>
 				  </div>
-				  <div id="companyDetails" class="tab-pane fade companyDetails" ng-controller="companyDetails">
+				  <div id="companyDetails" class="tab-pane fade companyDetails" ng-controller="companyDetailsController">
 					 <h3>Details about company</h3><br/>
 					 <button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
 					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
@@ -209,15 +244,20 @@
 					 	<li>State: <span class="cdetail">{{company.state}}</span></li>
 					 	<li>Street: <span class="cdetail">{{company.street}}</span></li>
 					 	<li>Zip: <span class="cdetail">{{company.zip}}</span></li>
+					 	<li>Owners:
+					 		<ul ng-if="company.owners != null" ng-repeat="owner in company.owners">
+									<li>{{owner.firstnamae}} {{owner.lastname}}</li>
+							</ul>
+					 	</li>
 					 </ul>
 				  </div>
-				  <div id="companyUpdate" class="tab-pane fade companyForm" ng-controller="companyUpdate">
+				  <div id="companyUpdate" class="tab-pane fade companyForm" ng-controller="companyUpdateController">
 				  	 <br/><button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
 					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
 					    <option value="">Select Company name</option>
 					 </select>
 					 <br/><br/>
-				  	 <h4>Update company {{selectCompany}}</h4>
+				  	 <h4>Update company {{comp}}</h4>
 				  	 <form>
 						<table>
 							<tr>
@@ -259,13 +299,30 @@
 						</table>
 					</form>
 				  </div>
-				  <div id="addOwners" class="tab-pane fade companyForm" ng-controller="addOwners">
+				  <div id="addOwners" class="tab-pane fade companyForm" ng-controller="addOwnersController">
 				  	<br/><button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
 					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
 					    <option value="">Select Company name</option>
 					 </select>
 					 <br/><br/>
-				  	 <h4>Add owners to company {{selectCompany}}</h4>
+					 <p>{{message}}</p>
+				  	 <h4>Add owners to company {{comp}}</h4>
+				  	 <form>
+						<table>
+							<tr>
+								<td>FirstName:</td>
+								<td><input type="text" name="name"  ng-model="owner.firstname" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>LastName:</td>
+								<td><input type="text" name="phone" ng-model="owner.lastname" class="theField"/></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><input type="submit" name="submit" ng-click="addOwner(owner)" class="btn btn-primary" value="Add Owner"/></td>
+							</tr>
+						</table>	
+					</form>		
 				  </div>
 			</div>
 			<div class="footer">

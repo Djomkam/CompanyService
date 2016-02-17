@@ -48,17 +48,15 @@ public class CompanyController {
 	
 	@RequestMapping(value="/{companyName}" , method=RequestMethod.PUT)
 	public Company updateCompany(@PathVariable String companyName,@RequestBody Company company) {
-		
+		//Company com = companyService.getCompany(companyName);
 		return companyService.update(company) ? company:null;
 		
 	}
 	
 	@RequestMapping(value="/{companyName}/owners/add" , method=RequestMethod.POST)
-	public Company addCompanyOwners(@PathVariable String companyName,@RequestBody BeneficialOwner owner) {
+	public String addCompanyOwners(@PathVariable String companyName,@RequestBody BeneficialOwner owner) {
 		Company company = companyService.getCompany(companyName);
-		owner.setCompany(company);
-		company.getOwners().add(owner);
-		ownerService.create(owner);
-		return companyService.update(company) ? company:null;
+		System.out.println(company.getName());
+		return ownerService.create(owner,companyName)? "Owner added Succesfully":"Error occurred try again";
 	}
 }

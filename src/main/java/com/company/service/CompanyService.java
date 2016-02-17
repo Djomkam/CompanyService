@@ -1,6 +1,5 @@
 package com.company.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.company.entity.BeneficialOwner;
 import com.company.entity.Company;
+import com.company.repository.BeneficialOwnerRepository;
 import com.company.repository.CompanyRepository;
 
 
@@ -19,6 +19,9 @@ public class CompanyService {
 
 	@Autowired
 	CompanyRepository repository;
+	
+	@Autowired
+	BeneficialOwnerRepository service;
 	
 	public Boolean create(Company company) {
 		Company existingCompany = repository.findByName(company.getName());
@@ -34,7 +37,7 @@ public class CompanyService {
 	
 	public Boolean update(Company company) {
 		Company existingCompany = repository.findByName(company.getName());
-		Set<BeneficialOwner> owners = new HashSet<>();
+		Set<BeneficialOwner> owners = service.findByCompanyName(company.getName());
 		if (existingCompany == null) 
 			return false;
 		
@@ -45,10 +48,9 @@ public class CompanyService {
 		existingCompany.setZip(company.getZip());
 		existingCompany.setEmail(company.getEmail());
 		existingCompany.setName(company.getName());
-		if(company.getOwners() != null) {
-			for(BeneficialOwner owner:company.getOwners()){
+		if(owners != null) {
+			for(BeneficialOwner owner:owners){
 				owner.setCompany(company);
-				owners.add(owner);
 			}
 			existingCompany.setOwners(owners);
 		}
