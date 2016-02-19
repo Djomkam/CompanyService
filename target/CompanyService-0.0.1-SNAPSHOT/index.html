@@ -1,35 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 	<head>
 		<meta charset="UTF-8">
 		<title>Company Services</title>
 		<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
 		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
 		<script>
-		    // Defining angularjs application.
-		    var postApp = angular.module('postApp', []);
-		    // Controller function and passing $http service and $scope var.
+		    var postApp = angular.module('app', []);
 		    postApp.controller('postController', function($scope, $http) {
-		      // create a blank object to handle form data.
 		        $scope.company = {};
-		      // calling our submit function.
 		        $scope.createCompany = function() {
-		        // Posting data to php file
 		        $http({
 		          method  : 'POST',
 		          url     : '/company/new',
-		          data    : $scope.company, //forms user object
-		          headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
+		          data    : $scope.company,
+		          headers : {'Content-Type': 'application/json'} 
 		         })
 		          .success(function(data) {
-		            if (data.errors) {
-		              // Showing errors.
-		              /*$scope.errorName = data.errors.name;
-		              $scope.errorUserName = data.errors.username;
-		              $scope.errorEmail = data.errors.email;*/
-		            } else {
-		              $scope.message = data.message;
-		            }
+		        	$scope.com = data;
+		          });
+		        };
+		    });
+		  
+		    postApp.controller('allCompaniesController', function($scope,$http) {
+			    $scope.getAllCompanies = function() {
+			    $http({
+			       method  : 'GET',
+			       url     : '/company/all',
+			     })
+			     .success(function(data) {
+			         $scope.companies = data;
+			        });
+			     };
+			});
+		    postApp.controller('companyDetailsController', function($scope,$http) {
+			    $scope.getAllCompanies = function() {
+				    $http({
+				       method  : 'GET',
+				       url     : '/company/all', 
+				     })
+				     .success(function(data) {
+				         $scope.companies = data;
+				     });
+			     };
+			     $scope.comp = $scope.selectedCompany;
+			     $scope.getCompany = function() {
+					 $http({
+					       method  : 'GET',
+					       url     : '/company/'+$scope.selectedCompany, 
+					  })
+					  .success(function(data) {
+					         $scope.company = data;
+					  });
+				  };
+			});
+		    postApp.controller('companyUpdateController', function($scope,$http) {
+			    $scope.getAllCompanies = function() {
+				    $http({
+				       method  : 'GET',
+				       url     : '/company/all',
+				     })
+				     .success(function(data) {
+				         $scope.companies = data;
+				     });
+			     };
+			     $scope.comp = $scope.selectedCompany;
+			     $scope.getCompany = function() {
+					 $http({
+					       method  : 'GET',
+					       url     : '/company/'+$scope.selectedCompany, 
+					  })
+					  .success(function(data) {
+					         $scope.company = data;
+					  });
+				  };
+				  $scope.updateCompany = function(company) {
+						 $http({
+						       method  : 'PUT',
+						       url     : '/company/'+$scope.selectedCompany,
+						       data    : company
+						  })
+						  .success(function(data) {
+						         $scope.message = data;
+						  });
+					  };
+			});
+		    postApp.controller('addOwnersController', function($scope, $http) {
+		    	$scope.getAllCompanies = function() {
+				    $http({
+				       method  : 'GET',
+				       url     : '/company/all', 
+				     })
+				     .success(function(data) {
+				         $scope.companies = data;
+				     });
+			     };
+		    	$scope.comp = $scope.selectedCompany;
+			     $scope.getCompany = function() {
+					 $http({
+					       method  : 'GET',
+					       url     : '/company/'+$scope.selectedCompany, 
+					  })
+					  .success(function(data) {
+					         $scope.company = data;
+					  });
+				  };
+		    	$scope.addOwner = function(owner) {
+		        $http({
+		          method  : 'POST',
+		          url     : '/company/'+$scope.selectedCompany+'/owners/add',
+		          data    : owner,
+		          headers : {'Content-Type': 'application/json'} 
+		         })
+		          .success(function(data) {
+		        	$scope.message = data;
 		          });
 		        };
 		    });
@@ -37,60 +124,189 @@
 	</head>
 	<body>
 		<div class="wrapper">
-			<div class="header">
-				<ul class="main-menu">
-					<li><a href="">Add Company</a></li>
-					<li><a href="">List Companies</a></li>
-				</ul>
-			</div>
-			<div class="content">
-				<h2>Add a Company</h2>
-				<span id="error"></span>
-				<div ng-app="postApp" ng-controller="postController" class="companyForm">
-					<form ng-submit="createCompany()">
-						<table>
-							<tr>
-								<td>Name:</td>
-								<td><input type="text" name="name"  ng-model="company.name" class="theField" placeholder="Enter Company Name" /></td>
-							</tr>
-							<tr>
-								<td>Phone:</td>
-								<td><input type="text" name="phone" ng-model="company.phone" class="theField" placeholder="Enter Company Phone Number" /></td>
-							</tr>
-							<tr>
-								<td>Email:</td>
-								<td><input type="text" name="email" ng-model="company.email" class="theField" placeholder="Enter Company Email" /></td>
-							</tr>
-							<tr>
-								<td>Street:</td>
-								<td><input type="text" name="street"  ng-model="company.street" class="theField" placeholder="Enter Street" /></td>
-							</tr>
-							<tr>
-								<td>City:</td>
-								<td><input type="text" name="city" ng-model="company.city" class="theField" placeholder="Enter City" /></td>
-							</tr>
-							<tr>
-								<td>State:</td>
-								<td><input type="text" name="State" ng-model="company.state" class="theField" placeholder="Enter State" /></td>
-							</tr>
-							<tr>
-								<td>Country:</td>
-								<td><input type="text" name="country" ng-model="company.country" class="theField" placeholder="Enter Country" /></td>
-							</tr>
-							<tr>
-								<td>Zip:</td>
-								<td><input type="text" name="zip" ng-model="company.zip" class="theField" placeholder="Enter zip" /></td>
-							</tr>
-							<tr>
-								<td>&nbsp;</td>
-								<td><input type="submit" name="submit" class="theButton" value="Add Company" /></td>
-							</tr>
-						</table>
+			<div class="tab-content">
+				<h2>Company Service</h2>
+				  <ul class="nav nav-tabs">
+				    <li class="active"><a data-toggle="tab" href="#addCompany">Add Company</a></li>
+				    <li><a data-toggle="tab" href="#allCompanies">List Companies</a></li>
+				    <li><a data-toggle="tab" href="#companyDetails">Detail Company</a></li>
+				    <li><a data-toggle="tab" href="#companyUpdate">Update Company</a></li>
+				    <li><a data-toggle="tab" href="#addOwners">Add Company Owners</a></li>
+				  </ul>
+				  <div id="addCompany" class="tab-pane fade in active companyForm" ng-controller="postController">
+				  	<h3>Add a Company</h3>
+				  	<form ng-submit="createCompany()" class="form-horizontal">
+							<div class="form-group">
+								<label for="name" class="col-sm-2 control-label">Name</label>
+								<div class="col-sm-7">
+									<input type="text" id="name" name="name"  ng-model="company.name" class="form-control" placeholder="Enter Company Name" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="phone" class="col-sm-2 control-label">Phone</label>
+								<div class="col-sm-7">
+									<input type="text" id="phone" name="phone"  ng-model="company.phone" class="form-control" placeholder="Enter Company Phone" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="email" class="col-sm-2 control-label">Email</label>
+								<div class="col-sm-7">
+									<input type="text" id="email" name="email"  ng-model="company.email" class="form-control" placeholder="Enter Company Email" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="city" class="col-sm-2 control-label">City</label>
+								<div class="col-sm-7">
+									<input type="text" id="city" name="city"  ng-model="company.city" class="form-control" placeholder="Enter City" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="address" class="col-sm-2 control-label">Address</label>
+								<div class="col-sm-7">
+									<input type="text" id="address" name="address"  ng-model="company.address" class="form-control" placeholder="Enter Company Address" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="country" class="col-sm-2 control-label">Country</label>
+								<div class="col-sm-7">
+									<input type="text" id="country" name="country"  ng-model="company.country" class="form-control" placeholder="Enter Country" />
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-offset-2 col-sm-10">
+							      <button type="submit" class="btn btn-primary">Add Company</button>
+							    </div>
+							</div>
 					</form>
-				</div>
-				<div id="result">
-					
-				</div>
+				  </div>
+				  <div id="allCompanies" class="tab-pane fade result" ng-controller="allCompaniesController">
+				  	<h3>List of all Companies</h3><br/>
+				  	<button class="btn btn-primary" ng-click="getAllCompanies()">All Companies</button><br/><br/>
+				  	<table class="table table-hover table-responsive">
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>Country</th>
+							<th>City</th>
+							<th>Address</th>
+							<th>Owners</th>
+						</tr>
+						<tr ng-repeat="com in companies">
+							<td>{{com.name}}</td>
+							<td>{{com.email}}</td>
+							<td>{{com.phone}}</td>
+							<td>{{com.country}}</td>
+							<td>{{com.city}}</td>
+							<td>{{com.address}}</td>
+							<td>
+								<ul ng-if="com.owners.length > 0" ng-repeat="owner in com.owners">
+									<li>{{owner.firstname}} {{owner.lastname}}</li>
+								</ul>
+							</td>
+						</tr>
+					</table>
+				  </div>
+				  <div id="companyDetails" class="tab-pane fade companyDetails" ng-controller="companyDetailsController">
+					 <h3>Details about company</h3><br/>
+					 <button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
+					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
+					    <option value="">Select Company name</option>
+					 </select>
+					 <br/><br/>
+					 <ul>
+					 	<li>Name: <span class="cdetail">{{company.name}}</span></li>
+					 	<li>Email: <span class="cdetail">{{company.email}}</span></li>
+					 	<li>Phone: <span class="cdetail">{{company.phone}}</span></li>
+					 	<li>Country: <span class="cdetail">{{company.country}}</span></li>
+					 	<li>City: <span class="cdetail">{{company.city}}</span></li>
+					 	<li>Address: <span class="cdetail">{{company.address}}</span></li>
+					 	<li>Owners:
+					 		<ul ng-if="company.owners.length > 0" ng-repeat="owner in company.owners">
+									<li>{{owner.firstname}} {{owner.lastname}}</li>
+							</ul>
+					 	</li>
+					 </ul>
+				  </div>
+				  <div id="companyUpdate" class="tab-pane fade companyForm" ng-controller="companyUpdateController">
+				  	 <br/><button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
+					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
+					    <option value="">Select Company name</option>
+					 </select>
+					 <br/><br/>
+				  	 <h4>Update company {{comp}}</h4>
+				  	 <form class="form-horizontal">
+						<div class="form-group">
+								<label for="name" class="col-sm-2 control-label">Name</label>
+								<div class="col-sm-7">
+									<input type="text" id="name" name="name"  ng-model="company.name" class="form-control" placeholder="Enter Company Name" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="phone" class="col-sm-2 control-label">Phone</label>
+								<div class="col-sm-7">
+									<input type="text" id="phone" name="phone"  ng-model="company.phone" class="form-control" placeholder="Enter Company Phone" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="email" class="col-sm-2 control-label">Email</label>
+								<div class="col-sm-7">
+									<input type="text" id="email" name="email"  ng-model="company.email" class="form-control" placeholder="Enter Company Email" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="city" class="col-sm-2 control-label">City</label>
+								<div class="col-sm-7">
+									<input type="text" id="city" name="city"  ng-model="company.city" class="form-control" placeholder="Enter City" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="address" class="col-sm-2 control-label">Address</label>
+								<div class="col-sm-7">
+									<input type="text" id="address" name="address"  ng-model="company.address" class="form-control" placeholder="Enter Company Address" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="country" class="col-sm-2 control-label">Country</label>
+								<div class="col-sm-7">
+									<input type="text" id="country" name="country"  ng-model="company.country" class="form-control" placeholder="Enter Country" />
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-offset-2 col-sm-10">
+							      <button type="submit" class="btn btn-primary" ng-click="updateCompany(company)">Update Company</button>
+							    </div>
+							</div>
+					</form>
+				  </div>
+				  <div id="addOwners" class="tab-pane fade companyForm" ng-controller="addOwnersController">
+				  	<br/><button class="btn btn-primary" ng-click="getAllCompanies()">Populate select box</button><br/><br/>
+					 <select ng-model="selectedCompany" ng-options="com.name as com.name for com in companies track by com.name" ng-change="getCompany()">
+					    <option value="">Select Company name</option>
+					 </select>
+					 <br/><br/>
+					 <p>{{message}}</p>
+				  	 <h4>Add owners to company {{comp}}</h4>
+				  	 <form class="form-horizontal">
+							<div class="form-group">
+								<label for="firstname" class="col-sm-2 control-label">Firstname</label>
+								<div class="col-sm-7">
+									<input type="text" id="firstname" name="firstname"  ng-model="owner.firstname" class="form-control" placeholder="Enter Firstname" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">Lastname</label>
+								<div class="col-sm-7">
+									<input type="text" id="lastname" name="lastname"  ng-model="owner.lastname" class="form-control" placeholder="Enter Lastname" />
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-offset-2 col-sm-10">
+							      <button type="submit" class="btn btn-primary" ng-click=addOwner"(owner)">Update Company</button>
+							    </div>
+							</div>
+					</form>		
+				  </div>
 			</div>
 			<div class="footer">
 			

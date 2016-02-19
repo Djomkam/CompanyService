@@ -7,16 +7,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Company extends BaseEntity{
 
 	@Column(name="Name", unique=true)
 	private String name;
 	
-	private String street;
 	private String city;
-	private  String state;
-	private String zip;
+	private String address;
 	private String country;
 	
 	@Column(name="Email")
@@ -56,20 +56,13 @@ public class Company extends BaseEntity{
 		this.phone = phone;
 	}
 
+	@JsonManagedReference
 	public Set<BeneficialOwner> getOwners() {
 		return owners;
 	}
 
 	public void setOwners(Set<BeneficialOwner> owners) {
 		this.owners = owners;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
 	}
 
 	public String getCity() {
@@ -80,20 +73,13 @@ public class Company extends BaseEntity{
 		this.city = city;
 	}
 
-	public String getState() {
-		return state;
+
+	public String getAddress() {
+		return address;
 	}
 
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getZip() {
-		return zip;
-	}
-
-	public void setZip(String zip) {
-		this.zip = zip;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getCountry() {

@@ -32,31 +32,29 @@ public class CompanyController {
 		
 	}
 	
-	@ResponseBody
+	
 	@RequestMapping(value="/all" , method=RequestMethod.GET)
-	public List<Company> getAllCompanies() {
+	public @ResponseBody List<Company> getAllCompanies() {
 		
 		return companyService.findAll();
 	}
 	
-	@ResponseBody
 	@RequestMapping(value="/{companyName}" , method=RequestMethod.GET)
-	public Company getCompanyDetails(@PathVariable String companyName) {
+	public @ResponseBody Company getCompanyDetails(@PathVariable String companyName) {
 		
 		return companyService.getCompany(companyName);
 	}
 	
 	@RequestMapping(value="/{companyName}" , method=RequestMethod.PUT)
 	public Company updateCompany(@PathVariable String companyName,@RequestBody Company company) {
-		//Company com = companyService.getCompany(companyName);
+		
 		return companyService.update(company) ? company:null;
 		
 	}
 	
 	@RequestMapping(value="/{companyName}/owners/add" , method=RequestMethod.POST)
-	public String addCompanyOwners(@PathVariable String companyName,@RequestBody BeneficialOwner owner) {
+	public Company addCompanyOwners(@PathVariable String companyName,@RequestBody BeneficialOwner owner) {
 		Company company = companyService.getCompany(companyName);
-		System.out.println(company.getName());
-		return ownerService.create(owner,companyName)? "Owner added Succesfully":"Error occurred try again";
+		return ownerService.create(owner,company)? company:null;
 	}
 }

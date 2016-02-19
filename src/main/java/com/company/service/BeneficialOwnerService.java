@@ -15,18 +15,25 @@ public class BeneficialOwnerService {
 	@Autowired
 	BeneficialOwnerRepository repository;
 	
-	public Boolean create(BeneficialOwner owner,String name) {
-		Company existingCompany = repository.findByFirstname(owner.getFirstname());
-		if (existingCompany != null && name.equals(existingCompany.getName())) 
-			return false;
+	@Autowired
+	CompanyService rep;
+	
+	public Boolean create(BeneficialOwner owner,Company company) {
 		
-		//existingCompany.setOwners(repository.findByCompanyName(name));
-		//owner.setCompany(existingCompany);
+		//determine if the company already exist and if yes id the owner already a beneficiary?
+		Company existingCompany = repository.findByFirstname(owner.getFirstname());
+		
+		if (existingCompany != null && company.getName().equals(existingCompany.getName())) 
+			return false;
+		owner.setCompany(company);
 		
 		BeneficialOwner saved = repository.save(owner);
 		
 		if (saved == null) 
 			return false;
+		
+		company.getOwners().add(saved);
+		rep.updateOwners(company);
 		
 		return true;
 	}
